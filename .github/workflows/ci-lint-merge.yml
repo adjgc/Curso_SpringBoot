@@ -1,0 +1,41 @@
+name: CI - Lint & Auto-Merge
+
+# El pipeline se activará cuando abras un Pull Request hacia la rama main
+on:
+  pull_request:
+    branches: [ "main" ]
+
+# Permisos necesarios para que el bot de GitHub pueda hacer el merge
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  lint-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Descargar el código
+        uses: actions/checkout@v4
+
+      - name: ☕ Configurar el entorno Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: 🧹 Ejecutar Linter / Validar Sintaxis (Sin Tests)
+        # Compila el código para asegurar que no hay errores de sintaxis. 
+        # (Si en el futuro agregas el plugin de Checkstyle en tu pom.xml, puedes cambiar esto a: mvn checkstyle:check)
+        run: mvn clean compile -DskipTests
+
+  auto-merge:
+    needs: lint-and-validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔀 Fusionar automáticamente a main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Usa la CLI de GitHub para aprobar y hacer el merge del Pull Request
+        run: gh pr merge ${{ github.event.pull_request.number }} --auto --merge
+        
