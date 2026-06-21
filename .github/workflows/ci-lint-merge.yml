@@ -24,10 +24,8 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: 🧹 Ejecutar Linter / Validar Sintaxis (Sin Tests)
-        # Compila el código para asegurar que no hay errores de sintaxis. 
-        # (Si en el futuro agregas el plugin de Checkstyle en tu pom.xml, puedes cambiar esto a: mvn checkstyle:check)
-        run: mvn clean compile -DskipTests
+      - name: Run Maven tests across all sub-projects
+        run: find . -name "pom.xml" -type f -execdir mvn -B test \;
 
   auto-merge:
     needs: lint-and-validate
@@ -38,4 +36,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # Usa la CLI de GitHub para aprobar y hacer el merge del Pull Request
         run: gh pr merge ${{ github.event.pull_request.number }} --auto --merge
-        
