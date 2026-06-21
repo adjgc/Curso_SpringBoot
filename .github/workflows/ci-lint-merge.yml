@@ -1,0 +1,37 @@
+name: CI - Lint & Auto-Merge
+
+# El pipeline se activará cuando abras un Pull Request hacia la rama main
+on:
+  pull_request:
+    branches: [ "main" ]
+
+# Permisos necesarios para que el bot de GitHub pueda hacer el merge
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  lint-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Descargar el código
+        uses: actions/checkout@v4
+
+      - name: ☕ Configurar el entorno Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run Maven tests across all sub-projects
+        run: find . -name "pom.xml" -type f -execdir mvn -B test \;
+
+  auto-merge:
+    needs: lint-and-validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fusionar automáticamente a main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge ${{ github.event.pull_request.number }} --auto --merge --repo ${{ github.repository }}
