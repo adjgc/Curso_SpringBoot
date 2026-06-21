@@ -13,6 +13,6 @@ public interface IPersonaService {
     
     public Persona getPersona(Long id);
     
-    public void editPersona(Long idOriginal, Long idNuevo, String nuevoNombre, String nuevoApellido, Integer nuevaEdad);
+    public void editPersona(Long idOriginal, String nuevoNombre, String nuevoApellido, Integer nuevaEdad);
     
 }
