@@ -1,16 +1,16 @@
 package com.jpa.jpa.service;
 
 import com.jpa.jpa.model.Persona;
-import com.jpa.jpa.repository.PersonaRepository;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.jpa.jpa.repository.IPersonaRepository;
 
 @Service
 @AllArgsConstructor
 public class PersonaService implements IPersonaService{
     
-    private PersonaRepository personaRepository;
+    private IPersonaRepository personaRepository;
 
     @Override
     public List<Persona> getPersonas() {
@@ -40,6 +40,11 @@ public class PersonaService implements IPersonaService{
         persona.setNombre(nuevoNombre);
         persona.setApellido(nuevoApellido);
         persona.setEdad(nuevaEdad);
+        this.savePersona(persona);
+    }
+
+    @Override
+    public void editPersona(Persona persona) {
         this.savePersona(persona);
     }
     

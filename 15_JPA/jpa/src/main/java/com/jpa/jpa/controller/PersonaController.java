@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class PersonaController {
     
-    private IPersonaService personaService;
+    private final IPersonaService personaService;
     
     @GetMapping("/persona/{id}")
     @ResponseBody
@@ -50,6 +50,12 @@ public class PersonaController {
             @RequestParam(required=false, name ="edad") Integer nuevaEdad){
         personaService.editPersona(id, nuevoNombre, nuevoApellido, nuevaEdad);
         return personaService.getPersona(id);
+    }
+    
+    @PutMapping("/persona")
+    public Persona editPersona(@RequestBody Persona persona){
+        personaService.editPersona(persona);
+        return personaService.getPersona(persona.getId());
     }
     
 }
