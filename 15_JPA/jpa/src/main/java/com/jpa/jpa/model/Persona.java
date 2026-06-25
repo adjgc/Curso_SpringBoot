@@ -4,8 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,8 +24,7 @@ public class Persona {
     private String nombre;
     private String apellido;
     private Integer edad;
-    @OneToOne
-    @JoinColumn(name="mascota_id_mascota", referencedColumnName = "id_mascota")
-    private Mascota mascota;
+    @OneToMany
+    private List<Mascota> listaMascotas;
     
 }
